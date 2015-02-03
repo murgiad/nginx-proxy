@@ -1,0 +1,28 @@
+nginx:
+
+  image: murgiad/nginx-proxy
+
+  ports:
+  - "80:80"
+  - "443:443"
+
+  volumes:
+  - /var/run/docker.sock:/tmp/docker.sock
+  - /myappcerts/certs/:/etc/nginx/certs
+
+myapp:
+
+  image: myapp/myapp
+
+  ports:
+    ....
+
+  volumes:
+    ....
+
+  environment:
+  - VIRTUAL_HOST= myapp.myapp.org
+  - CERT_NAME=myapp
+  - LOAD_BALANCER_LEAST_CONN
+  - LOAD_BALANCER_IP_HASH
+  - MARK_BACKUP_AFTER=2
