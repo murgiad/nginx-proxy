@@ -6,7 +6,7 @@ This fork is from [jwilder](https://github.com/jwilder).
 
 ### About this fork
 
-This fork add the possibility to specify some load_balancing nginx behaviour:
+This fork adds the possibility to specify some load_balancing nginx behaviour:
 
  - can set [least connected][3] checking the env 'LOAD_BALANCER_LEAST_CONN' from the container
  - can set [session persistence][4] checking the env 'LOAD_BALANCER_IP_HASH' from the container
@@ -14,12 +14,12 @@ This fork add the possibility to specify some load_balancing nginx behaviour:
 
 ### Usage
     
-Start any containers you want proxied with an env var `VIRTUAL_HOST=subdomain.youdomain.com`
+Start any container you want proxied with an env var `VIRTUAL_HOST=subdomain.youdomain.com`
 
     $ docker run -e VIRTUAL_HOST=foo.bar.com -e LOAD_BALANCER_LEAST_CONN -e LOAD_BALANCER_IP_HASH -e MARK_BACKUP_AFTER=2...
     
-Is not mandatory to assign a value to LOAD_BALANCER_LEAST_CONN and LOAD_BALANCER_IP_HASH. 
-The only precence is sufficient to activate the options;
+It's not mandatory to assign a value to LOAD_BALANCER_LEAST_CONN and LOAD_BALANCER_IP_HASH. 
+The only precence is sufficient to activate the option;
 
 The env MARK_BACKUP_AFTER must be initialized with a numeric value. This numeric value specify after how many container they are marked as backup.
 
