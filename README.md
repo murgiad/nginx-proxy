@@ -1,8 +1,31 @@
-![nginx 1.7.8](https://img.shields.io/badge/nginx-1.7.8-brightgreen.svg) ![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)
-
 nginx-proxy sets up a container running nginx and [docker-gen][1].  docker-gen generate reverse proxy configs for nginx and reloads nginx when containers are started and stopped.
 
 See [Automated Nginx Reverse Proxy for Docker][2] for why you might want to use this.
+
+This fork is from [jwilder](https://github.com/jwilder).
+
+### About this fork
+
+This fork adds the possibility to specify some load_balancing nginx behaviour:
+
+ - can set [least connected][3] checking the env 'LOAD_BALANCER_LEAST_CONN' from the container
+ - can set [session persistence][4] checking the env 'LOAD_BALANCER_IP_HASH' from the container
+ - can set [backup][5] checking the env 'MARK_BACKUP_AFTER' from the container
+
+### Usage
+    
+Start any container you want proxied with an env var `VIRTUAL_HOST=subdomain.youdomain.com`
+
+    $ docker run -e VIRTUAL_HOST=foo.bar.com -e LOAD_BALANCER_LEAST_CONN -e LOAD_BALANCER_IP_HASH -e MARK_BACKUP_AFTER=2...
+    
+It's not mandatory to assign a value to LOAD_BALANCER_LEAST_CONN and LOAD_BALANCER_IP_HASH. 
+The only precence is sufficient to activate the option;
+
+The env MARK_BACKUP_AFTER must be initialized with a numeric value. This numeric value specify after how many container they are marked as backup.
+
+Es. If 5 containers with the same VIRTUAL_HOST env and MARK_BACKUP_AFTER=2 are started, the last 2 are used as normal server and the first 3 are marked as backup server
+    
+## The original features
 
 ### Usage
 
@@ -22,6 +45,9 @@ If your container exposes multiple ports, nginx-proxy will default to the servic
 
   [1]: https://github.com/jwilder/docker-gen
   [2]: http://jasonwilder.com/blog/2014/03/25/automated-nginx-reverse-proxy-for-docker/
+  [3]: http://nginx.org/en/docs/http/load_balancing.html#nginx_load_balancing_with_least_connected
+  [4]: http://nginx.org/en/docs/http/load_balancing.html#nginx_load_balancing_with_ip_hash
+  [5]: http://nginx.org/en/docs/http/ngx_http_upstream_module.html#server
 
 ### Multiple Hosts
 
