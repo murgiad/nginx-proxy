@@ -82,6 +82,22 @@ upstream {{ $host }} {
 {{ end }}
 }
 
+{{ $firstContainer := first $containers }}
+
+{{ if $firstContainer.Env.LOCALHOST  }}
+server {
+	server_name localhost;
+
+	location / {
+		proxy_pass http://{{ $host }};
+		{{ if (exists (printf "/etc/nginx/htpasswd/%s" $host)) }}
+		auth_basic	"Restricted {{ $host }}";
+		auth_basic_user_file	{{ (printf "/etc/nginx/htpasswd/%s" $host) }};
+		{{ end }}
+	}
+}
+{{ end }}
+
 {{/* Get the first cert name defined by containers w/ the same vhost */}}
 {{ $certName := (first (groupByKeys $containers "Env.CERT_NAME")) }}
 
@@ -127,22 +143,6 @@ server {
 	}
 }
 {{ else }}
-
-{{ $firstContainer := first $containers }}
-
-{{ if $firstContainer.Env.LOCALHOST  }}
-server {
-	server_name localhost;
-
-	location / {
-		proxy_pass http://{{ $host }};
-		{{ if (exists (printf "/etc/nginx/htpasswd/%s" $host)) }}
-		auth_basic	"Restricted {{ $host }}";
-		auth_basic_user_file	{{ (printf "/etc/nginx/htpasswd/%s" $host) }};
-		{{ end }}
-	}
-}
-{{ end }}
 
 server {
 	server_name {{ $host }};
